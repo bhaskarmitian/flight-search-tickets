@@ -24,7 +24,7 @@ public class Receiver {
 	}
 	
 	@RabbitListener(queues = "SearchQ")
-    public void processMessage(Map<String,Object> fare) {
+    public void processMessage(Map<String,Object> fare) throws Exception {
        System.out.println(fare);
        searchComponent.updateInventory((String)fare.get("FLIGHT_NUMBER"),(String)fare.get("FLIGHT_DATE"),(int)fare.get("NEW_INVENTORY"));
        //call repository and update the fare for the given flight

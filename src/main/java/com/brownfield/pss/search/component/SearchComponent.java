@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.listener.exception.ListenerExecutionFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +40,7 @@ public class SearchComponent {
 		return searchResult; 
 	}
 
-	public void updateInventory(String flightNumber, String flightDate, int new_inventory) {
+	public void updateInventory(String flightNumber, String flightDate, int new_inventory) throws Exception {
 		logger.info("Updating inventory for flight "+ flightNumber + " innventory "+ new_inventory); 
 		Flight flight = flightRepository.findByFlightNumberAndFlightDate(flightNumber,flightDate);
 		if(flight != null){ //added by Ramesh
@@ -49,7 +48,8 @@ public class SearchComponent {
 			inv.setCount(new_inventory);
 			flightRepository.save(flight);
 		}else{ //flight info is not available yet in search schema
-			throw new ListenerExecutionFailedException("", new Throwable());
+			//throw new ListenerExecutionFailedException("", new Throwable());
+			throw new Exception("flight info is not available yet in search schema");
 		} 
 	}	 
 }
