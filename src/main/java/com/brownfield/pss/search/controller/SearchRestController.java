@@ -1,8 +1,14 @@
 package com.brownfield.pss.search.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,19 +23,35 @@ import com.brownfield.pss.search.entity.Flight;
 @CrossOrigin
 @RestController
 @RequestMapping("/search")
+@RefreshScope
 class SearchRestController {
 	
-	private SearchComponent searchComponent;
+	private static final Logger logger = LoggerFactory.getLogger(SearchRestController.class);
+
+	
+	@Value("${originairports.shutdown}")
+	private String originAirportShutdownList;
 	
 	@Autowired
-	public SearchRestController(SearchComponent searchComponent){
-		this.searchComponent = searchComponent;
-	}
+	private SearchComponent searchComponent;
+	
+	/*
+	 * @RequestMapping(value="/get", method = RequestMethod.POST) List<Flight>
+	 * search(@RequestBody SearchQuery query){ System.out.println("Input : "+
+	 * query); return searchComponent.search(query); }
+	 */
 	
 	@RequestMapping(value="/get", method = RequestMethod.POST)
-	List<Flight> search(@RequestBody SearchQuery query){
-		System.out.println("Input : "+ query);
-		return searchComponent.search(query);
+	public List<Flight> search(@RequestBody SearchQuery query){
+	 logger.info("Input : "+ query);
+	// if(originAirportShutdownList!=null) {
+		 if(Arrays.asList(originAirportShutdownList.split(",")).contains(query.getOrigin())){
+				logger.info("The origin airport is in shutdown state"); 
+	 //}
+	
+	return new ArrayList<Flight>();
+	}
+	return searchComponent.search(query);
 	}
  
 }
