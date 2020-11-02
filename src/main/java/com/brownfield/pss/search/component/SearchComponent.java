@@ -41,16 +41,16 @@ public class SearchComponent {
 	}
 
 	public void updateInventory(String flightNumber, String flightDate, int new_inventory) throws Exception {
-		logger.info("Updating inventory for flight "+ flightNumber + " innventory "+ new_inventory); 
-		Flight flight = flightRepository.findByFlightNumberAndFlightDate(flightNumber,flightDate);
-		if(flight != null){ //added by Ramesh
+		logger.info("Updating inventory for flight " + flightNumber + " innventory " + new_inventory);
+		Flight flight = flightRepository.findByFlightNumberAndFlightDate(flightNumber, flightDate);
+		if (flight != null) { // added by Ramesh
 			Inventory inv = flight.getInventory();
 			inv.setCount(new_inventory);
 			flightRepository.save(flight);
-		}else{ //flight info is not available yet in search schema
-			//throw new ListenerExecutionFailedException("", new Throwable());
+		} else { // flight info is not available yet in search schema
+					// throw new ListenerExecutionFailedException("", new Throwable());
 			throw new Exception("flight info is not available yet in search schema");
-		} 
+		}
 	}	 
 }
 
